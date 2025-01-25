@@ -9,6 +9,7 @@ const Register = () => {
     password: '',
     confirmPassword: '',
     name: '',
+    role: 'employee'
   })
   const [otp, setOtp] = useState('')
   const [otpSent, setOtpSent] = useState(false)
@@ -167,7 +168,9 @@ const Register = () => {
               onChange={(e) => setData({ ...data, email: e.target.value })}
             />
           </div>
+
           
+
           <button 
             type="button"
             className="auth-button"
@@ -202,6 +205,29 @@ const Register = () => {
             </div>
           )}
 
+        <div className="role-select">
+            <label>Select Role:</label>
+            <select 
+              value={data.role}
+              onChange={(e) => setData({ ...data, role: e.target.value })}
+              required
+            >
+              <option value="employee">Employee</option>
+              <option value="manager">Manager</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+
+        <div className="password-requirements">
+                    Password must contain:
+                    <ul>
+                      <li>At least 8 characters</li>
+                      <li>At least one uppercase letter</li>
+                      <li>At least one number</li>
+                      <li>At least one special character</li>
+                    </ul>
+        </div>
+
           <div className="password-field">
             <input 
               type={showPassword ? "text" : "password"}
@@ -220,20 +246,13 @@ const Register = () => {
           </div>
 
           {data.password && (
-            <div className="password-strength">
+            <div 
+              className="password-strength"
+              data-strength={passwordStrength.message}
+            >
               Password Strength: {passwordStrength.message}
             </div>
           )}
-
-          <div className="password-requirements">
-            Password must contain:
-            <ul>
-              <li>At least 8 characters</li>
-              <li>At least one uppercase letter</li>
-              <li>At least one number</li>
-              <li>At least one special character</li>
-            </ul>
-          </div>
 
           <div className="password-field">
             <input 
@@ -264,7 +283,7 @@ const Register = () => {
             <p>
               Already have an account? {' '}
               <Link to="/login" className="auth-link">
-                Sign In
+                Login
               </Link>
             </p>
           </div>

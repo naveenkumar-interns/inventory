@@ -21,17 +21,35 @@ const Login = () => {
         body: JSON.stringify(data),
       })
       const result = await response.json()
+
+      console.log(result)
       
       if (response.ok) {
-        // Store token in localStorage if your backend returns one
-        if (result.token) {
+        if (result.data) {
           localStorage.setItem('token', result.token)
+          localStorage.setItem('userRole', result.data.role)
+          localStorage.setItem('userData', JSON.stringify(result.data))
+          
+          // Redirect based on role
+          switch(result.data.role) {
+            case 'admin':
+              navigate('/admin-dashboard')
+              break
+            case 'manager':
+              navigate('/manager-dashboard')
+              break
+            case 'employee':
+              navigate('/employee-dashboard')
+              break
+            default:
+              setError('Invalid role')
+          }
         }
-        navigate('/')
       } else {
         setError(result.message || 'Login failed')
       }
     } catch (err) {
+      console.error(err)
       setError('Something went wrong. Please try again.')
     }
   }

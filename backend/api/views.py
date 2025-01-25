@@ -1,15 +1,19 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 import random
 import pymongo
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth import get_user_model
+from .models import Inventory
 
 client = pymongo.MongoClient("mongodb+srv://HCqpxhFHemEzvcWx:HCqpxhFHemEzvcWx@cluster0.srrgh.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
 db = client["inventory"]
 collection_users = db["users"]
 collection_otp = db["otp"]
+collection_inventory = db["inventory"]
 
 @api_view(['POST'])
 def register(request):
@@ -120,5 +124,89 @@ def reset_password(request):
             return Response({'message': 'Invalid OTP'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def dashboard_stats(request):
+    try:
+        # Get counts from MongoDB collections
+        managers_count = collection_users.count_documents({'role': 'manager'})
+        employees_count = collection_users.count_documents({'role': 'employee'})
+        inventory_count = collection_inventory.count_documents({})
+        
+        # Get recent activities (last 5 users)
+        recent_users = list(collection_users.find({}, {'name': 1, 'date_joined': 1}).sort('date_joined', -1).limit(5))
+        recent_activities = []
+        for user in recent_users:
+            if 'name' in user and 'date_joined' in user:
+                recent_activities.append({
+                    'type': 'user_joined',
+                    'user': user['name'],
+                    'timestamp': user['date_joined']
+                })
+        
+        return Response({
+            'managers_count': managers_count,
+            'employees_count': employees_count, 
+            'inventory_count': inventory_count,
+            'recent_activities': recent_activities
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_managers(request):
+    try:
+        managers = list(collection_users.find({'role': 'manager'}, {
+            '_id': 1,
+            'name': 1, 
+            'email': 1,
+            'date_joined': 1,
+            'is_active': 1
+        }))
+        
+        manager_data = [{
+            'id': str(manager['_id']),
+            'name': manager.get('name', ''),
+            'email': manager.get('email', ''),
+            'status': 'Active' if manager.get('is_active', True) else 'Inactive',
+            'joined_date': manager.get('date_joined')
+        } for manager in managers]
+        
+        return Response(manager_data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_employees(request):
+    try:
+        # Query MongoDB directly instead of using Django ORM
+        employees = list(collection_users.find({'role': 'employee'}, {
+            '_id': 1,
+            'name': 1,
+            'email': 1, 
+            'date_joined': 1,
+            'is_active': 1
+        }))
+        
+        employee_data = [{
+            'id': str(employee['_id']),
+            'name': employee.get('name', ''),
+            'email': employee.get('email', ''),
+            'status': 'Active' if employee.get('is_active', True) else 'Inactive',
+            'joined_date': employee.get('date_joined')
+        } for employee in employees]
+        
+        return Response(employee_data, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({
+            'error': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

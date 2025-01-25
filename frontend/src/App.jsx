@@ -3,6 +3,9 @@ import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-route
 import Login from './pages/Login'
 import Register from './pages/Register'
 import ForgetPassword from './pages/ForgetPassword'
+import AdminDashboard from './pages/dashboards/AdminDashboard'
+import ManagerDashboard from './pages/dashboards/ManagerDashboard'
+import EmployeeDashboard from './pages/dashboards/EmployeeDashboard'
 import './App.css'
 
 const HomePage = () => {
@@ -87,6 +90,9 @@ const App = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forget-password" element={<ForgetPassword />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard />} />
+        <Route path="/manager-dashboard" element={<ManagerDashboard />} />
+        <Route path="/employee-dashboard" element={<EmployeeDashboard />} />
       </Routes>
     </Router>
   )
