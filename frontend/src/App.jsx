@@ -10,39 +10,42 @@ const HomePage = () => {
 
   const containerStyle = {
     minHeight: '100vh',
+    width: '100%',
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f2f5',
+    backgroundColor: '#ffffff',
     padding: '20px'
   }
 
   const contentStyle = {
-    backgroundColor: 'white',
-    padding: '30px',
-    borderRadius: '8px',
-    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
     width: '100%',
     maxWidth: '400px',
-    textAlign: 'center'
+    padding: '32px',
+    backgroundColor: '#ffffff',
+    borderRadius: '8px',
+    border: '1px solid #e0e0e0',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.05)'
   }
 
   const titleStyle = {
-    color: '#1a73e8',
-    marginBottom: '20px',
-    fontSize: '24px'
+    color: '#333333',
+    marginBottom: '32px',
+    fontSize: '24px',
+    fontWeight: '600',
+    textAlign: 'center'
   }
 
   const buttonStyle = {
     width: '100%',
-    padding: '10px',
-    margin: '10px 0',
+    padding: '12px',
+    margin: '8px 0',
     border: 'none',
-    borderRadius: '4px',
-    fontSize: '16px',
+    borderRadius: '6px',
+    fontSize: '14px',
+    fontWeight: '500',
     cursor: 'pointer',
-    transition: 'background-color 0.3s'
+    transition: 'all 0.2s ease'
   }
 
   return (
@@ -53,23 +56,23 @@ const HomePage = () => {
         <button 
           style={{
             ...buttonStyle,
-            backgroundColor: '#1a73e8',
+            backgroundColor: '#2196f3',
             color: 'white'
           }}
           onClick={() => navigate('/login')}
         >
-          Login
+          Sign In
         </button>
         
         <button 
           style={{
             ...buttonStyle,
-            backgroundColor: '#34a853',
+            backgroundColor: '#4caf50',
             color: 'white'
           }}
           onClick={() => navigate('/register')}
         >
-          Register
+          Create Account
         </button>
       </div>
     </div>
