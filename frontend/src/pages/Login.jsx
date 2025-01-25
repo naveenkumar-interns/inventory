@@ -41,7 +41,7 @@ const Login = () => {
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">Welcome Back</h1>
-          <p className="auth-subtitle">Please sign in to continue</p>
+          <p className="auth-subtitle">Please Loginto continue</p>
         </div>
         
         <form className="auth-form" onSubmit={handleLogin}>
@@ -75,7 +75,7 @@ const Login = () => {
           {error && <p className="error-message">{error}</p>}
 
           <button type="submit" className="auth-button">
-            Sign In
+            Login
           </button>
 
           <div className="auth-footer">
